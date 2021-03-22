@@ -5,8 +5,6 @@ const Search = () => {
   const [term, setTerm] = useState('programming');
   const [results, setResults] = useState([]);
 
-  console.log('results', results);
-
   useEffect(() => {
     const search = async () => {
       const { data } = await axios.get('https://en.wikipedia.org/w/api.php', {
@@ -22,8 +20,23 @@ const Search = () => {
       setResults(data.query.search);
     };
 
-    search();
+    if (term) {
+      search();
+    }
   }, [term])
+
+  const renderedResults = results.map((result) => {
+    return (
+      <div key={result.pageid} className="item">
+        <div className="content">
+          <div className="header">
+            {result.title}
+          </div>
+          {result.snippet}
+        </div>
+      </div>
+    );
+  });
 
   return (
     <div>
@@ -36,6 +49,9 @@ const Search = () => {
             onChange={e => setTerm(e.target.value)}
           />
         </div>
+      </div>
+      <div className="ui celled list">
+        {renderedResults}
       </div>
     </div>
   );
